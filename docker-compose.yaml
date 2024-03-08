@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  api-prod:
+    image: github-stats-api-prod
+    container_name: github-stats-api-prod
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.api.prod
+    expose:
+      - "${API_PORT:-3000}"
+    ports:
+      - "${API_PORT:-3000}:${API_PORT:-3000}"
+
+  api-dev:
+    image: node:21
+    container_name: github-stats-api-dev
+    command: npm run start:dev
+    working_dir: /app
+    volumes:
+      - .:/app
+    expose:
+      - "${API_PORT:-3000}"
+    ports:
+      - "${API_PORT:-3000}:${API_PORT:-3000}"

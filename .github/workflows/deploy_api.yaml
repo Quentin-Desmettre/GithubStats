@@ -1,0 +1,44 @@
+name: deploy-to-vps
+run-name: "Deploy app to VPS"
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  APP_PATH: /home/quentin/GithubStats
+  REPO_URL: git@github.com:Quentin-Desmettre/GithubStats.git
+
+jobs:
+  deploy:
+    name: "Deploy App to staging server"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure SSH
+        run: |
+          ls
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+          SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+
+      - name: Ensure presence of the app folder
+        run: ssh staging 'ls ${{ env.APP_PATH }}/.git || git clone ${{ env.REPO_URL }} ${{ env.APP_PATH }}'
+
+      - name: Pull the source code on the server
+        run: ssh staging 'cd ${{ env.APP_PATH }} && git fetch && git reset --hard origin/main'
+
+      - name: Restart the app
+        run: ssh staging 'cd ${{ env.APP_PATH }} && docker compose down --remove-orphans && docker compose up --build -d api-prod'

@@ -1,4 +1,4 @@
 export type EnvironmentVariables = {
-  PORT: number;
+  API_PORT: number;
   GITHUB_TOKEN: string;
 };

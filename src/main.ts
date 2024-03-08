@@ -7,7 +7,8 @@ import { EnvironmentVariables } from './types/environmentVariables';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
-  const port = app.get(ConfigService<EnvironmentVariables>).get<number>('PORT');
-  await app.listen(port || 3000);
+  const port = app.get(ConfigService<EnvironmentVariables>).get<number>('API_PORT') || 3000;
+  console.log(`Server is running on port ${port}`);
+  await app.listen(port);
 }
 bootstrap();
