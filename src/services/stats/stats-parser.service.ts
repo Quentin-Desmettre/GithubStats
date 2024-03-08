@@ -1,20 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
 import { Contributions, LanguagesContributions, UserData } from '@/types/stats';
+import stats from '@/constants/stats';
 
 @Injectable()
 export class StatsParserService {
-  private result: UserData = {
-    totalCommits: 0,
-    totalPullRequests: 0,
-    totalReviews: 0,
-    totalIssues: 0,
-    languages: {
-      totalBytes: 0,
-      data: {},
-    },
-    repositories: {},
-  };
+  private result: UserData = stats.defaultStats;
   constructor() {}
 
   private addToLanguages(base: LanguagesContributions, name: string, color: string, bytes: number): LanguagesContributions {

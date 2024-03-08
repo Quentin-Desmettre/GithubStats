@@ -1,9 +1,38 @@
 import { Injectable } from '@nestjs/common';
 
-import { Contributions, RawContributionsAnswer } from '@/types/stats';
+import { Contributions, RawCalendarAnswer, RawContributionsAnswer } from '@/types/stats';
 
 @Injectable()
 export class StatsFetcherService {
+  async getRawCalendar(token: string, username: string, from: Date, to: Date): Promise<RawCalendarAnswer> {
+    const headers = {
+      Authorization: `bearer ${token}`,
+    };
+    const body = {
+      query: `query {
+        user(login: "${username}") {
+          contributionsCollection(from: "${from.toISOString()}", to: "${to.toISOString()}") {
+            contributionCalendar {
+              totalContributions
+              weeks {
+                contributionDays {
+                  contributionCount
+                  date
+                }
+              }
+            }
+          }
+        }
+      }`,
+    };
+    const response = await fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: headers,
+    });
+    return await response.json();
+  }
+
   async getRawContributions(token: string, username: string, from: Date, to: Date): Promise<RawContributionsAnswer> {
     const headers = {
       Authorization: `bearer ${token}`,
@@ -115,14 +144,7 @@ export class StatsFetcherService {
       return undefined;
     }
     return {
-      totalCommitContributions: parsed.data.user.contributionsCollection.totalCommitContributions,
-      totalIssueContributions: parsed.data.user.contributionsCollection.totalIssueContributions,
-      totalPullRequestContributions: parsed.data.user.contributionsCollection.totalPullRequestContributions,
-      totalPullRequestReviewContributions: parsed.data.user.contributionsCollection.totalPullRequestReviewContributions,
-      commitContributionsByRepository: parsed.data.user.contributionsCollection.commitContributionsByRepository,
-      issueContributionsByRepository: parsed.data.user.contributionsCollection.issueContributionsByRepository,
-      pullRequestContributionsByRepository: parsed.data.user.contributionsCollection.pullRequestContributionsByRepository,
-      pullRequestReviewContributionsByRepository: parsed.data.user.contributionsCollection.pullRequestReviewContributionsByRepository,
+      ...parsed.data.user.contributionsCollection,
     };
   }
 }
