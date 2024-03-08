@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import {
-  Contributions,
-  LanguagesContributions,
-  UserData,
-} from '../../types/stats';
+
+import { Contributions, LanguagesContributions, UserData } from '@/types/stats';
 
 @Injectable()
 export class StatsParserService {
@@ -20,14 +17,8 @@ export class StatsParserService {
   };
   constructor() {}
 
-  private addToLanguages(
-    base: LanguagesContributions,
-    name: string,
-    color: string,
-    bytes: number,
-  ): LanguagesContributions {
-    if (base.data[name] === undefined)
-      base.data[name] = { bytes: 0, percentage: 0, color: color };
+  private addToLanguages(base: LanguagesContributions, name: string, color: string, bytes: number): LanguagesContributions {
+    if (base.data[name] === undefined) base.data[name] = { bytes: 0, percentage: 0, color: color };
     base.data[name].bytes += bytes;
     return base;
   }
@@ -37,7 +28,7 @@ export class StatsParserService {
     this.result.totalPullRequests += contrib.totalPullRequestContributions;
     this.result.totalReviews += contrib.totalPullRequestReviewContributions;
     this.result.totalIssues += contrib.totalIssueContributions;
-    contrib.commitContributionsByRepository.forEach((baseRepo) => {
+    contrib.commitContributionsByRepository.forEach(baseRepo => {
       const repo = baseRepo.repository;
       if (this.result.repositories[repo.nameWithOwner] === undefined) {
         this.result.repositories[repo.nameWithOwner] = {
@@ -52,46 +43,28 @@ export class StatsParserService {
         };
       }
       const repository = this.result.repositories[repo.nameWithOwner];
-      repo.languages.edges.forEach((lang) => {
-        repository.languages = this.addToLanguages(
-          repository.languages,
-          lang.node.name,
-          lang.node.color,
-          lang.size,
-        );
-        this.result.languages = this.addToLanguages(
-          this.result.languages,
-          lang.node.name,
-          lang.node.color,
-          lang.size,
-        );
+      repo.languages.edges.forEach(lang => {
+        repository.languages = this.addToLanguages(repository.languages, lang.node.name, lang.node.color, lang.size);
+        this.result.languages = this.addToLanguages(this.result.languages, lang.node.name, lang.node.color, lang.size);
       });
     });
   }
 
-  computePercentagesAndTotalFor(
-    languages: LanguagesContributions,
-  ): LanguagesContributions {
+  computePercentagesAndTotalFor(languages: LanguagesContributions): LanguagesContributions {
     languages.totalBytes = 0;
-    Object.keys(languages.data).forEach((key) => {
+    Object.keys(languages.data).forEach(key => {
       languages.totalBytes += languages.data[key].bytes;
     });
-    Object.keys(languages.data).forEach((key) => {
-      languages.data[key].percentage =
-        (languages.data[key].bytes / languages.totalBytes) * 100;
+    Object.keys(languages.data).forEach(key => {
+      languages.data[key].percentage = (languages.data[key].bytes / languages.totalBytes) * 100;
     });
     return languages;
   }
 
   computePercentagesAndTotal(): void {
-    this.result.languages = this.computePercentagesAndTotalFor(
-      this.result.languages,
-    );
-    Object.keys(this.result.repositories).forEach((key) => {
-      this.result.repositories[key].languages =
-        this.computePercentagesAndTotalFor(
-          this.result.repositories[key].languages,
-        );
+    this.result.languages = this.computePercentagesAndTotalFor(this.result.languages);
+    Object.keys(this.result.repositories).forEach(key => {
+      this.result.repositories[key].languages = this.computePercentagesAndTotalFor(this.result.repositories[key].languages);
     });
   }
 

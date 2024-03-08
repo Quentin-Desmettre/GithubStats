@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Contributions, RawContributionsAnswer } from '../../types/stats';
+
+import { Contributions, RawContributionsAnswer } from '@/types/stats';
 
 @Injectable()
 export class StatsFetcherService {
-  async getRawContributions(
-    token: string,
-    username: string,
-    from: Date,
-    to: Date,
-  ): Promise<RawContributionsAnswer> {
+  async getRawContributions(token: string, username: string, from: Date, to: Date): Promise<RawContributionsAnswer> {
     const headers = {
       Authorization: `bearer ${token}`,
     };
@@ -112,38 +108,21 @@ export class StatsFetcherService {
     return await response.json();
   }
 
-  async getContributions(
-    token: string,
-    username: string,
-    from: Date,
-    to: Date,
-  ): Promise<Contributions | undefined> {
+  async getContributions(token: string, username: string, from: Date, to: Date): Promise<Contributions | undefined> {
     const parsed = await this.getRawContributions(token, username, from, to);
 
     if (parsed.data === undefined || parsed.data.user === undefined) {
       return undefined;
     }
     return {
-      totalCommitContributions:
-        parsed.data.user.contributionsCollection.totalCommitContributions,
-      totalIssueContributions:
-        parsed.data.user.contributionsCollection.totalIssueContributions,
-      totalPullRequestContributions:
-        parsed.data.user.contributionsCollection.totalPullRequestContributions,
-      totalPullRequestReviewContributions:
-        parsed.data.user.contributionsCollection
-          .totalPullRequestReviewContributions,
-      commitContributionsByRepository:
-        parsed.data.user.contributionsCollection
-          .commitContributionsByRepository,
-      issueContributionsByRepository:
-        parsed.data.user.contributionsCollection.issueContributionsByRepository,
-      pullRequestContributionsByRepository:
-        parsed.data.user.contributionsCollection
-          .pullRequestContributionsByRepository,
-      pullRequestReviewContributionsByRepository:
-        parsed.data.user.contributionsCollection
-          .pullRequestReviewContributionsByRepository,
+      totalCommitContributions: parsed.data.user.contributionsCollection.totalCommitContributions,
+      totalIssueContributions: parsed.data.user.contributionsCollection.totalIssueContributions,
+      totalPullRequestContributions: parsed.data.user.contributionsCollection.totalPullRequestContributions,
+      totalPullRequestReviewContributions: parsed.data.user.contributionsCollection.totalPullRequestReviewContributions,
+      commitContributionsByRepository: parsed.data.user.contributionsCollection.commitContributionsByRepository,
+      issueContributionsByRepository: parsed.data.user.contributionsCollection.issueContributionsByRepository,
+      pullRequestContributionsByRepository: parsed.data.user.contributionsCollection.pullRequestContributionsByRepository,
+      pullRequestReviewContributionsByRepository: parsed.data.user.contributionsCollection.pullRequestReviewContributionsByRepository,
     };
   }
 }

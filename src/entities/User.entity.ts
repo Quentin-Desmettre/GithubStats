@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
-import { UserData } from '../types/stats';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
+
+import { UserData } from '@/types/stats';
 
 @Entity('user')
 export class UserEntity {
@@ -8,22 +9,13 @@ export class UserEntity {
 
   @Column({
     transformer: {
-      to: (value: UserData) => {
-        console.log('value', value);
-        return JSON.stringify(value);
-      },
-      from: (value: string) => {
-        return JSON.parse(value);
-      },
+      to: (value: UserData) => JSON.stringify(value),
+      from: (value: string) => JSON.parse(value),
     },
     type: 'text',
   })
-  stats: {
-    [dateStart: string]: {
-      [dateEnd: string]: {
-        updated_at: Date;
-        data: UserData;
-      };
-    };
-  };
+  stats: UserData;
+
+  @Column()
+  updated_at: Date;
 }

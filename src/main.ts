@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+
+import { AppModule } from './app.module';
 import { EnvironmentVariables } from './types/environmentVariables';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
   const port = app.get(ConfigService<EnvironmentVariables>).get<number>('PORT');
