@@ -9,9 +9,9 @@ services:
       - ./api:/app
       - ${SSL_DIRECTORY_BIND:-./api}:${SSL_DIRECTORY_BIND:-/app}
     expose:
-      - "${API_PORT:-3000}"
+      - "3000"
     ports:
-      - "${API_PORT:-3000}:${API_PORT:-3000}"
+      - "${API_PORT:-3000}:3000"
 
   api-dev:
     image: node:21
@@ -21,6 +21,6 @@ services:
     volumes:
       - ./api:/app
     expose:
-      - "${API_PORT:-3000}"
+      - "3000"
     ports:
-      - "${API_PORT:-3000}:${API_PORT:-3000}"
+      - "${API_PORT:-3000}:3000"

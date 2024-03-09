@@ -1,12 +1,10 @@
 import * as fs from 'fs';
 
 import { NestFactory } from '@nestjs/core';
-import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import { INestApplication } from '@nestjs/common';
 
 import { AppModule } from './app.module';
-import { EnvironmentVariables } from './types/environmentVariables';
 
 config();
 
@@ -23,10 +21,9 @@ async function bootstrap(): Promise<void> {
     app = await NestFactory.create(AppModule);
   }
 
-  const port = app.get(ConfigService<EnvironmentVariables>).get<number>('API_PORT') || 3000;
-  await app.listen(port);
+  await app.listen(3000);
 
   // eslint-disable-next-line no-console
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port 3000`);
 }
 bootstrap();
