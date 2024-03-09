@@ -5,7 +5,8 @@ import { CalendarFetcherService } from '@/services/calendar/calendar-fetcher.ser
 import { UserEntity } from '@/entities/User.entity';
 import { CalendarParserService } from '@/services/calendar/calendar-parser.service';
 import { asyncForEachYearBetween } from '@/utils/dates';
-import { CalendarData } from '@/types/calendar';
+import { Calendar, CalendarData } from '@/types/calendar';
+import Dates from '@/constants/dates';
 
 @Injectable()
 export class CalendarService {
@@ -15,7 +16,19 @@ export class CalendarService {
     private readonly calendarParserService: CalendarParserService,
   ) {}
 
-  async getContributions(user: UserEntity, githubToken: string, from: Date, to: Date): Promise<object> {
+  async getContributions(user: UserEntity, githubToken: string, from: Date, to: Date): Promise<Calendar> {
+    if (new Date().getTime() - user.contributions_updated_at.getTime() < Dates.statsUpdateInterval) {
+      return user.contributions;
+    }
+
+    const presented = await this.getPresentedContributions(user, githubToken, from, to);
+    user.contributions = presented;
+    user.contributions_updated_at = new Date();
+    await this.userService.save(user);
+    return presented;
+  }
+
+  async getPresentedContributions(user: UserEntity, githubToken: string, from: Date, to: Date): Promise<Calendar> {
     const totalContributions: CalendarData[] = [];
 
     await asyncForEachYearBetween(from, to, async (from, to) => {

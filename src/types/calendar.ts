@@ -29,6 +29,7 @@ export type CalendarData = {
 };
 
 export type Calendar = {
+  totalContributions: number;
   contributions: {
     [key: string]: number;
   };

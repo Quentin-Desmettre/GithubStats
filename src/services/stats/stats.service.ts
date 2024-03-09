@@ -17,9 +17,9 @@ export class StatsService {
   ) {}
 
   async getStats(user: UserEntity, githubToken: string): Promise<UserData> {
-    // if (new Date().getTime() - user.updated_at.getTime() < Dates.statsUpdateInterval) {
-    //   return user.stats;
-    // }
+    if (new Date().getTime() - user.updated_at.getTime() < Dates.statsUpdateInterval) {
+      return user.stats;
+    }
 
     user.stats = await this.fetchStats(user.username, githubToken, Dates.statsStart, new Date());
     user.updated_at = new Date();

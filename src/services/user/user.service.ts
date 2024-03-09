@@ -21,6 +21,11 @@ export class UserService {
       username,
       stats: stats.defaultStats,
       updated_at: new Date(1970, 0),
+      contributions_updated_at: new Date(1970, 0),
+      contributions: {
+        totalContributions: 0,
+        contributions: {},
+      },
     };
     return this.save(user);
   }
