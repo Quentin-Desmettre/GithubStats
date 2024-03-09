@@ -2,5 +2,5 @@
 .gitignore
 **/node_modules
 **/npm-debug.log
-build
-dist
+**/build
+**/dist
