@@ -1,13 +1,13 @@
 export const forEachYearBetween = (from: Date, to: Date, callback: (from: Date, to: Date) => void): void => {
   const current = new Date(to);
   const oneYearBefore = new Date(to);
-  oneYearBefore.setFullYear(oneYearBefore.getFullYear() - 1);
+  oneYearBefore.setMonth(oneYearBefore.getMonth() - 12);
 
   while (current.getTime() > from.getTime()) {
     if (oneYearBefore.getTime() < from.getTime()) oneYearBefore.setTime(from.getTime());
     callback(oneYearBefore, current);
-    current.setFullYear(current.getFullYear() - 1);
-    oneYearBefore.setFullYear(oneYearBefore.getFullYear() - 1);
+    current.setMonth(current.getMonth() - 12);
+    oneYearBefore.setMonth(oneYearBefore.getMonth() - 12);
   }
 };
 

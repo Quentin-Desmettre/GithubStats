@@ -9,6 +9,11 @@ import { StatsController } from './controllers/stats/stats.controller';
 import { StatsFetcherService } from './services/stats/stats-fetcher.service';
 import { StatsParserService } from './services/stats/stats-parser.service';
 import { StatsResponseService } from './responses/stats-response.service';
+import { CalendarService } from './services/calendar/calendar.service';
+import { CalendarFetcherService } from './services/calendar/calendar-fetcher.service';
+
+import { CalendarController } from '@/controllers/calendar/calendar.controller';
+import { CalendarParserService } from '@/services/calendar/calendar-parser.service';
 
 @Module({
   imports: [
@@ -23,8 +28,7 @@ import { StatsResponseService } from './responses/stats-response.service';
     }),
     TypeOrmModule.forFeature(entities),
   ],
-  controllers: [StatsController],
-  providers: [UserService, StatsService, StatsFetcherService, StatsParserService, StatsResponseService],
-  // exports: [ConfigService],
+  controllers: [StatsController, CalendarController],
+  providers: [UserService, StatsService, StatsFetcherService, StatsParserService, StatsResponseService, CalendarService, CalendarFetcherService, CalendarParserService],
 })
 export class AppModule {}

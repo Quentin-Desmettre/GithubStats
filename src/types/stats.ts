@@ -66,23 +66,3 @@ export type RawContributionsAnswer = {
       }
     | undefined;
 };
-
-export type RawCalendarAnswer = {
-  data:
-    | {
-        user: {
-          contributionsCollection: {
-            contributionCalendar: {
-              totalContributions: number;
-              weeks: {
-                contributionDays: {
-                  contributionCount: number;
-                  date: string;
-                }[];
-              }[];
-            };
-          };
-        };
-      }
-    | undefined;
-};

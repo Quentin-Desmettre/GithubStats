@@ -7,7 +7,7 @@ import { UserService } from '@/services/user/user.service';
 import { EnvironmentVariables } from '@/types/environmentVariables';
 import { StatsResponseService } from '@/responses/stats-response.service';
 
-@Controller('github-stats')
+@Controller('stats')
 export class StatsController {
   constructor(
     private readonly statsService: StatsService,

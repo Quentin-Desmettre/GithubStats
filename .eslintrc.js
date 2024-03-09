@@ -21,6 +21,9 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/no-unused-vars': 'error',
+    'no-console': 'warn',
+    'no-debugger': 'warn',
     eqeqeq: ['error', 'smart'],
     'sort-imports': [
       'error',

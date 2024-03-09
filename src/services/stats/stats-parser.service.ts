@@ -1,12 +1,8 @@
-import { Injectable } from '@nestjs/common';
-
 import { Contributions, LanguagesContributions, UserData } from '@/types/stats';
 import stats from '@/constants/stats';
 
-@Injectable()
 export class StatsParserService {
-  private result: UserData = stats.defaultStats;
-  constructor() {}
+  constructor(private result: UserData = JSON.parse(JSON.stringify(stats.defaultStats))) {}
 
   private addToLanguages(base: LanguagesContributions, name: string, color: string, bytes: number): LanguagesContributions {
     if (base.data[name] === undefined) base.data[name] = { bytes: 0, percentage: 0, color: color };
