@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.api.prod
+    volumes:
+      - ${SSL_DIRECTORY_BIND}:${SSL_DIRECTORY_BIND}
     expose:
       - "${API_PORT:-3000}"
     ports:
